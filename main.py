@@ -37,8 +37,18 @@ class Sprite(turtle.Turtle):
             self.sety(-340)
             self.rt(60)
 
+    def is_collision(self, other):
+        if (self.xcor() >= (other.xcor() - 20)) and \
+        (self.xcor() <= (other.xcor() + 20)) and \
+        (self.ycor() >= (other.ycor() - 20)) and \
+        (self.ycor() <= (other.ycor() + 20)):
+            return True
+        else:
+            return False
+
+
 class Player(Sprite):
-    def __init__(self,spriteshape, color, startx, starty):
+    def __init__(self, spriteshape, color, startx, starty):
         Sprite.__init__(self, spriteshape, color, startx, starty)
         self.speed = 4
         self.lives = 3
@@ -54,6 +64,13 @@ class Player(Sprite):
 
     def decelerate(self):
         self.speed -= 1
+
+class Enemy(Sprite):
+    def __init__(self, spriteshape, color, startx, starty):
+        Sprite.__init__(self, spriteshape, color, startx, starty)
+        self.speed = 5
+        self.setheading(random.randint(0,360))
+
 
 class Game():
     def __init__(self):
@@ -83,6 +100,7 @@ game = Game()
 game.draw_border()
 
 player = Player("triangle", "white", 0, 0)
+enemy = Enemy("circle", "red", -100, 0)
 
 turtle.onkey(player.turn_left, "a")
 turtle.onkey(player.turn_right, "d")
@@ -93,7 +111,12 @@ turtle.listen()
 
 while True:
     player.move()
+    enemy.move()
 
+    if player.is_collision(enemy):
+        x = random.randint(-350, 350)
+        y = random.randint(-350, 350)
+        enemy.goto(x, y)
 
 
 
